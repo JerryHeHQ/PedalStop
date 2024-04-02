@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "422141901355",
+    "project_id": "mobile-final-project-25b50",
+    "storage_bucket": "mobile-final-project-25b50.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422141901355:android:f3beb923fd7f3ba539886e",
+        "android_client_info": {
+          "package_name": "com.example.pedalstop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-Gjq8ALyBWLdQrR0HVKsArRzPGDB8H_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
