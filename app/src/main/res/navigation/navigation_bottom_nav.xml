@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_bottom_nav"
+    app:startDestination="@id/navigation_search">
+
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.example.pedalstop.Screens.SearchFragment"
+        tools:layout="@layout/fragment_search"/>
+
+    <fragment
+        android:id="@+id/navigation_saved"
+        android:name="com.example.pedalstop.Screens.SavedFragment"
+        tools:layout="@layout/fragment_saved"/>
+
+    <fragment
+        android:id="@+id/navigation_posts"
+        android:name="com.example.pedalstop.Screens.PostsFragment"
+        tools:layout="@layout/fragment_posts"/>
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.pedalstop.Screens.SettingsFragment"
+        tools:layout="@layout/fragment_settings"/>
+
+</navigation>
