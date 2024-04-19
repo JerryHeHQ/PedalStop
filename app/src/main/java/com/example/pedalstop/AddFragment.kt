@@ -167,86 +167,11 @@ class AddFragment : Fragment() {
 
         }
 
-//        binding.submitButton.setOnClickListener {
-//            var hasError = false
-//            data class TextInput(
-//                val editText: TextInputEditText,
-//                val layout: TextInputLayout,
-//                val error: String
-//            )
-//
-//            val textInputs : Array<TextInput> = arrayOf(
-//                TextInput(
-//                    binding.latitudeTextInputEditText,
-//                    binding.latitudeTextInputLayout,
-//                    "Latitude cannot be empty"
-//                ),
-//                TextInput(
-//                    binding.longitudeTextInputEditText,
-//                    binding.longitudeTextInputLayout,
-//                    "Longitude cannot be empty"
-//                ),
-//                TextInput(
-//                    binding.shapeAutoCompleteTextView,
-//                    binding.shapeTextInputLayout,
-//                    "Shape cannot be empty"
-//                ),
-//                TextInput(
-//                    binding.mountingTextInputEditText,
-//                    binding.mountingTextInputLayout,
-//                    "Mounting cannot be empty"
-//                ),
-//                TextInput(
-//                    binding.descriptionTextInputEditText,
-//                    binding.descriptionTextInputLayout,
-//                    "Description cannot be empty"
-//                ),
-//            )
-//
-//            for (i in textInputs.indices) {
-//                if (textInputs[i].editText.text.isNullOrBlank()) {
-//                    hasError = true
-//                    textInputs[i].layout.isErrorEnabled = true
-//                    textInputs[i].layout.error = textInputs[i].error
-//                } else {
-//                    textInputs[i].layout.isErrorEnabled = false
-//                    textInputs[i].layout.error = null
-//                }
-//            }
-//
-//            if (selectedImageURI == null) {
-//                hasError = true
-//                Toast.makeText(activity, "Please provide an image", Toast.LENGTH_LONG).show()
-//            }
-//
-//            if (!hasError) {
-//                viewModel.addPost(
-//                    selectedImageURI!!,
-//                    textInputs[0].editText.text.toString().toDouble(),
-//                    textInputs[1].editText.text.toString().toDouble(),
-//                    textInputs[2].editText.text.toString(),
-//                    textInputs[3].editText.text.toString(),
-//                    textInputs[4].editText.text.toString(),
-//                ) {
-//                    val toastMessage = if (it) {
-//                        "Post successfully added"
-//                    } else {
-//                        "Error adding post"
-//                    }
-//                    Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
-//                    parentFragmentManager.popBackStack()
-//                }
-//            }
-//
-//        }
-
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 
 }
