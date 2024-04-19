@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.ServerTimestamp
 
-data class PostMetadata(
+data class PostData(
     var ownerName: String = "",
     var ownerUid: String = "",
     var imageUUID : String = "",
@@ -13,6 +13,10 @@ data class PostMetadata(
     var shape : String = "",
     var mounting : String = "",
     var description : String = "",
+    var favoritedBy : List<String> = listOf<String>(),
+    var rating : Double = -1.0,
+    var numRatings : Int = 0,
+    var reviewIds : List<String> = listOf<String>(),
     @ServerTimestamp val timeStamp: Timestamp? = null,
     @DocumentId var firestoreID: String = ""
 )

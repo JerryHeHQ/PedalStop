@@ -7,8 +7,8 @@ class FirestoreHelper {
 
     private val database: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    fun uploadPostMetadata (postMetadata: PostMetadata, resultListener: (Boolean) -> Unit) {
-        database.collection("posts").add(postMetadata)
+    fun uploadPostMetadata (postData: PostData, resultListener: (Boolean) -> Unit) {
+        database.collection("posts").add(postData)
             .addOnSuccessListener {
                 Log.d(javaClass.simpleName, "Upload SUCCEEDED")
                 resultListener(true)

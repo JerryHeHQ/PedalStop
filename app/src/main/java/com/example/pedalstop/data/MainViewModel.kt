@@ -34,7 +34,7 @@ class MainViewModel : ViewModel() {
                 return@uploadPostImage
             }
 
-            val postMetadata = PostMetadata(
+            val postData = PostData(
                 currentAuthUser.name,
                 currentAuthUser.uid,
                 imageUUID,
@@ -45,7 +45,7 @@ class MainViewModel : ViewModel() {
                 description
             )
 
-            firestoreHelper.uploadPostMetadata(postMetadata) {
+            firestoreHelper.uploadPostMetadata(postData) {
                 resultListener(it)
             }
 
