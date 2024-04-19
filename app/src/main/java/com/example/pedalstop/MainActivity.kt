@@ -1,30 +1,30 @@
 package com.example.pedalstop
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.ViewConfiguration
-import androidx.activity.enableEdgeToEdge
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.pedalstop.data.MainViewModel
 import com.example.pedalstop.databinding.ActivityMainBinding
 
-
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var navController: NavController
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding : ActivityMainBinding
+    private lateinit var navController : NavController
+    private lateinit var appBarConfiguration : AppBarConfiguration
     private lateinit var authUser : AuthUser
-    private val mainViewModel : MainViewModel by viewModels()
+    private val viewModel : MainViewModel by viewModels()
 
     private fun initMenu() {
         addMenuProvider(object : MenuProvider {
@@ -42,6 +42,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    fun showProgressBar() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgressBar() {
+        binding.progressBar.visibility = View.GONE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +71,15 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.bottomNavigationView.setupWithNavController(navController)
+
+        binding.addPostImageButton.setOnClickListener {
+            Log.d("BRUH", viewModel.getCurrentAuthUser().name)
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.testFrameLayout, AddFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun onStart() {
@@ -70,8 +87,7 @@ class MainActivity : AppCompatActivity() {
         authUser = AuthUser(activityResultRegistry)
         lifecycle.addObserver(authUser)
         authUser.observeUser().observe(this) {
-            mainViewModel.setCurrentAuthUser(it)
-            binding.username.text = it.name
+            viewModel.setCurrentAuthUser(it)
         }
     }
 
