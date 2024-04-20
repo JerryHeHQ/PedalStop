@@ -6,23 +6,45 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import com.example.pedalstop.R
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedalstop.data.MainViewModel
+import com.example.pedalstop.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
-
+    private var _binding : FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private fun initAdapter(binding: FragmentSearchBinding) {
+        val postRowAdapter = PostRowAdapter(requireContext(), viewModel)
+        binding.searchRecyclerView.adapter = postRowAdapter
+        viewModel.observeAllPosts().observe(viewLifecycleOwner) {
+            postRowAdapter.submitList(it)
+        }
+//        viewModel.searchPosts.observe(viewLifecycleOwner, Observer {
+//            postRowAdapter.submitList(it)
+//        })
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-//        return inflater.inflate(R.layout.fragment_search, container, false)
-        return inflater.inflate(R.layout.row_post, container, false)
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentSearchBinding.bind(view)
+        binding.searchRecyclerView.layoutManager = LinearLayoutManager(binding.searchRecyclerView.context)
+        initAdapter(binding)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

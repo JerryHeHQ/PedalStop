@@ -36,4 +36,8 @@ class StorageHelper {
                 Log.d(javaClass.simpleName, "Delete FAILED $pictureUUID")
             }
     }
+
+    fun uuid2StorageReference(uuid: String): StorageReference {
+        return photoStorage.child(uuid)
+    }
 }

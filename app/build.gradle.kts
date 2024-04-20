@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 android {
@@ -63,4 +64,11 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.firebaseui:firebase-ui-auth:8.0.2")
     implementation("com.firebaseui:firebase-ui-storage:8.0.2")
+    implementation("com.google.android.gms:play-services-location:18.0.0")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
+
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }
