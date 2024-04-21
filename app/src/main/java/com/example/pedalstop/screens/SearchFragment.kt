@@ -1,6 +1,7 @@
 package com.example.pedalstop.screens
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,12 +20,13 @@ class SearchFragment : Fragment() {
     private fun initAdapter(binding: FragmentSearchBinding) {
         val postRowAdapter = PostRowAdapter(requireContext(), viewModel)
         binding.searchRecyclerView.adapter = postRowAdapter
-        viewModel.observeAllPosts().observe(viewLifecycleOwner) {
-            postRowAdapter.submitList(it)
-        }
-//        viewModel.searchPosts.observe(viewLifecycleOwner, Observer {
+//        viewModel.observeAllPosts().observe(viewLifecycleOwner) {
 //            postRowAdapter.submitList(it)
-//        })
+//        }
+        viewModel.visiblePosts.observe(viewLifecycleOwner, Observer {
+            Log.d("BRUH", "submitList")
+            postRowAdapter.submitList(it)
+        })
     }
 
     override fun onCreateView(

@@ -26,17 +26,19 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
 
         @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(oldItem: PostData, newItem: PostData): Boolean {
-            return oldItem.ownerName == newItem.ownerName
-                    && oldItem.imageUUID == newItem.imageUUID
-                    && oldItem.latitude == newItem.latitude
-                    && oldItem.longitude == newItem.longitude
-                    && oldItem.shape == newItem.shape
-                    && oldItem.mounting == newItem.mounting
-                    && oldItem.description == newItem.description
-                    && oldItem.favoritedBy == newItem.favoritedBy
-                    && oldItem.ratingSum == newItem.ratingSum
-                    && oldItem.reviewIDs == newItem.reviewIDs
-                    && oldItem.timeStamp == newItem.timeStamp
+            // This does not allow for location based updates
+//            return oldItem.ownerName == newItem.ownerName
+//                    && oldItem.imageUUID == newItem.imageUUID
+//                    && oldItem.latitude == newItem.latitude
+//                    && oldItem.longitude == newItem.longitude
+//                    && oldItem.shape == newItem.shape
+//                    && oldItem.mounting == newItem.mounting
+//                    && oldItem.description == newItem.description
+//                    && oldItem.favoritedBy == newItem.favoritedBy
+//                    && oldItem.ratingSum == newItem.ratingSum
+//                    && oldItem.reviewIDs == newItem.reviewIDs
+//                    && oldItem.timeStamp == newItem.timeStamp
+            return false
         }
     }
 
@@ -112,8 +114,8 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
             }
         }
 
-        val decimalFormatter = DecimalFormat("#.##")
-        binding.rowPostRating.text = decimalFormatter.format(rating).toString()
+        val ratingFormatter = DecimalFormat("#.##")
+        binding.rowPostRating.text = ratingFormatter.format(rating).toString()
 
         val numRatingsText = "(${postData.reviewIDs.size})"
         binding.rowPostNumRatings.text = numRatingsText
@@ -121,7 +123,10 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
         binding.rowPostShape.text = postData.shape
         binding.rowPostMounting.text = postData.mounting
 
-        // TODO
-        // binding.rowPostDistance.text =
+        val milesPerMeter = 0.000621371192
+        val distance = viewModel.getDistance(postData.latitude, postData.longitude) * milesPerMeter
+        val distanceFormatter = DecimalFormat("##,###.##")
+        val distanceText = "${distanceFormatter.format(distance)} mi"
+        binding.rowPostDistance.text = distanceText
     }
 }

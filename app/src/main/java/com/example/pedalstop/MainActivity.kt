@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import android.os.Looper
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.example.pedalstop.data.LatLng
 import com.google.android.gms.location.*
 
 class MainActivity : AppCompatActivity() {
@@ -80,6 +81,10 @@ class MainActivity : AppCompatActivity() {
                     locationResult.lastLocation.let { location ->
                         val latitude = location.latitude
                         val longitude = location.longitude
+                        Log.d("BRUH", "requestSingleLocationUpdate")
+                        Log.d("BRUH", latitude.toString())
+                        Log.d("BRUH", longitude.toString())
+                        viewModel.setUserLocation(LatLng(latitude, longitude))
                     }
                     // Remove location updates after receiving the first location
                     fusedLocationClient.removeLocationUpdates(this)
