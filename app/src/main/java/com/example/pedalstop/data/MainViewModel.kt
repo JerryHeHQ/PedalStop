@@ -8,6 +8,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pedalstop.R
 import com.example.pedalstop.User
 import com.example.pedalstop.invalidUser
 import kotlinx.coroutines.launch
@@ -25,6 +26,12 @@ class MainViewModel : ViewModel() {
     private val searchLocation = MutableLiveData<LatLng>().apply {
         value = LatLng(null, null)
     }
+    private val shapesTag = MutableLiveData<String>().apply {
+        value = "Shapes"
+    }
+    private val mountingsTag = MutableLiveData<String>().apply {
+        value = "Mountings"
+    }
 
     private var allPosts = MutableLiveData<List<PostData>>().apply {
         viewModelScope.launch {
@@ -37,17 +44,35 @@ class MainViewModel : ViewModel() {
 
     var visiblePosts = MediatorLiveData<List<PostData>>().apply {
         addSource(allPosts) { value = sortAndFilterPosts(it) }
-        // TODO: Add tags as source
         addSource(searchLocation) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
         addSource(userLocation) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
+        addSource(shapesTag) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
+        addSource(mountingsTag) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
     }
 
     private fun sortAndFilterPosts(posts: List<PostData>): List<PostData> {
         val copiedPosts = posts.toMutableList()
-        // TODO: Filter posts based on selected tags
+        copiedPosts.removeAll {
+            var removePost = false
+            if (!shapesTag.value.equals("Shapes")) {
+                Log.d("BRUH", shapesTag.value.toString())
+                Log.d("BRUH", it.shape)
+                if (it.shape != shapesTag.value) {
+                    removePost = true
+                }
+            }
+            if (!mountingsTag.value.equals("Mountings")) {
+                if (it.mounting != mountingsTag.value) {
+                    removePost = true
+                }
+            }
+            Log.d("BRUH", removePost.toString())
+            removePost
+        }
         copiedPosts.sortBy {
             getDistance(it.latitude, it.longitude)
         }
+        Log.d("BRUH", copiedPosts.toList().toString())
         return copiedPosts.toList()
     }
 
@@ -126,6 +151,14 @@ class MainViewModel : ViewModel() {
 
     private fun locationIsValid(location: LatLng?): Boolean {
         return !(location?.latitude == null || location.longitude == null)
+    }
+
+    fun setShapesTag(shape: String) {
+        shapesTag.value = shape
+    }
+
+    fun setMountingsTag(mounting: String) {
+        mountingsTag.value = mounting
     }
 
     fun glideFetch(uuid: String, imageView: ImageView, width: Int, height: Int) {

@@ -194,11 +194,17 @@ class MainActivity : AppCompatActivity() {
         val shapesAdapter = ArrayAdapter(this, R.layout.dropdown_item, shapes)
         binding.shapeTagAutoCompleteTextView.setAdapter(shapesAdapter)
         binding.shapeTagAutoCompleteTextView.setText(shapes[0], false)
+        binding.shapeTagAutoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+            viewModel.setShapesTag(shapes[position])
+        }
 
         val mountings = resources.getStringArray(R.array.mountingsWithAll)
         val mountingsAdapter = ArrayAdapter(this, R.layout.dropdown_item, mountings)
         binding.mountingTagAutoCompleteTextView.setAdapter(mountingsAdapter)
         binding.mountingTagAutoCompleteTextView.setText(mountings[0], false)
+        binding.mountingTagAutoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+            viewModel.setMountingsTag(mountings[position])
+        }
 
         geocoder = Geocoder(this, Locale.US)
         binding.locationTextInputLayout.setEndIconOnClickListener {
