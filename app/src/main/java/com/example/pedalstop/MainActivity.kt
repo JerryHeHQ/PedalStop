@@ -19,12 +19,19 @@ import com.example.pedalstop.data.MainViewModel
 import com.example.pedalstop.databinding.ActivityMainBinding
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.os.Build
 import android.os.Looper
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.pedalstop.data.LatLng
 import com.google.android.gms.location.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
@@ -34,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel : MainViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
+    private lateinit var geocoder: Geocoder
 
     private fun initMenu() {
         addMenuProvider(object : MenuProvider {
@@ -118,6 +126,34 @@ class MainActivity : AppCompatActivity() {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
+    private fun processAddresses(addresses: List<Address>) {
+        if (addresses.isNotEmpty()) {
+            val latitude = addresses[0].latitude
+            val longitude = addresses[0].longitude
+            viewModel.setSearchLocation(LatLng(latitude, longitude))
+            Log.d("BRUH", "processingAddresses")
+            Log.d("BRUH", latitude.toString())
+            Log.d("BRUH", longitude.toString())
+        }
+    }
+
+    private fun getGeocodingAddress(locationName: String) {
+        Log.d("BRUH", locationName)
+        if (Build.VERSION.SDK_INT >= 33) {
+            geocoder.getFromLocationName(locationName, 1) {
+                MainScope().launch(Dispatchers.Main) {
+                    processAddresses(it)
+                }
+            }
+        } else {
+            MainScope().launch(Dispatchers.Main) {
+                geocoder.getFromLocationName(locationName, 1)?.let { it1 ->
+                    processAddresses(it1)
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // enableEdgeToEdge()
@@ -163,6 +199,16 @@ class MainActivity : AppCompatActivity() {
         val mountingsAdapter = ArrayAdapter(this, R.layout.dropdown_item, mountings)
         binding.mountingTagAutoCompleteTextView.setAdapter(mountingsAdapter)
         binding.mountingTagAutoCompleteTextView.setText(mountings[0], false)
+
+        geocoder = Geocoder(this, Locale.US)
+        binding.locationTextInputLayout.setEndIconOnClickListener {
+            val locationName = binding.locationTextInputEditText.text.toString()
+            if (locationName.isBlank()) {
+                viewModel.setSearchLocation(LatLng(null, null))
+            } else {
+                getGeocodingAddress(locationName)
+            }
+        }
     }
 
     override fun onStart() {

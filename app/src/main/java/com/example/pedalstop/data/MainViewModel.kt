@@ -100,6 +100,11 @@ class MainViewModel : ViewModel() {
         Log.d("BRUH", userLocation.value.toString())
     }
 
+    fun setSearchLocation(location: LatLng) {
+        searchLocation.value = location
+        Log.d("BRUH", searchLocation.value.toString())
+    }
+
     fun getDistance(postLatitude: Double, postLongitude: Double): Double {
         val location = if (locationIsValid(searchLocation.value)) {
             searchLocation.value
