@@ -57,6 +57,9 @@ dependencies {
 
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("androidx.appcompat:appcompat:1.1.0")
+    implementation("com.google.android.material:material:1.0.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
@@ -69,6 +72,4 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
-
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

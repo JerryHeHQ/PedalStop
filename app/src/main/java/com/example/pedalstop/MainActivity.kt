@@ -20,6 +20,7 @@ import com.example.pedalstop.databinding.ActivityMainBinding
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Looper
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.pedalstop.data.LatLng
@@ -141,7 +142,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("BRUH", viewModel.getCurrentAuthUser().name)
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.testFrameLayout, AddFragment())
+                .replace(R.id.addFrameLayout, AddFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -152,6 +153,16 @@ class MainActivity : AppCompatActivity() {
             interval = 10000 // Update location every 10 seconds
         }
         requestSingleLocationUpdate()
+
+        val shapes = resources.getStringArray(R.array.shapesWithAll)
+        val shapesAdapter = ArrayAdapter(this, R.layout.dropdown_item, shapes)
+        binding.shapeTagAutoCompleteTextView.setAdapter(shapesAdapter)
+        binding.shapeTagAutoCompleteTextView.setText(shapes[0], false)
+
+        val mountings = resources.getStringArray(R.array.mountingsWithAll)
+        val mountingsAdapter = ArrayAdapter(this, R.layout.dropdown_item, mountings)
+        binding.mountingTagAutoCompleteTextView.setAdapter(mountingsAdapter)
+        binding.mountingTagAutoCompleteTextView.setText(mountings[0], false)
     }
 
     override fun onStart() {

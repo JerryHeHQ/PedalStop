@@ -27,6 +27,8 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
         @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(oldItem: PostData, newItem: PostData): Boolean {
             // This does not allow for location based updates
+            // A new value for the calculated distance can be used instead, but that would require
+            // more backend support and messy code, so this will do for now.
 //            return oldItem.ownerName == newItem.ownerName
 //                    && oldItem.imageUUID == newItem.imageUUID
 //                    && oldItem.latitude == newItem.latitude

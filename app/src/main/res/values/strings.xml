@@ -16,8 +16,25 @@
         <item>None</item>
         <item>Other</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="shapesWithAll">
+        <item>Shapes</item>
+        <item>Inverted U</item>
+        <item>Wave</item>
+        <item>Vertical Loop</item>
+        <item>Vertical Grid</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="mountingsWithAll">
+        <item>Mountings</item>
+        <item>Cemented</item>
+        <item>Bolted</item>
+        <item>Screwed</item>
+        <item>None</item>
+        <item>Other</item>
+    </string-array>
+
 
 
 </resources>
