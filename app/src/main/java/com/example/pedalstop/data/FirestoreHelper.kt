@@ -1,7 +1,11 @@
 package com.example.pedalstop.data
 
 import android.util.Log
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ServerTimestamp
+import com.google.firebase.firestore.toObject
 
 class FirestoreHelper {
 
@@ -50,5 +54,71 @@ class FirestoreHelper {
 //                resultListener(mutableListOf())
 //            }
 //    }
+
+    data class FavoritesList(
+        var list: List<String> = listOf<String>(),
+    )
+
+    private fun createFavorites(userUid: String, resultListener: (Boolean) -> Unit) {
+        database.collection("favorites").document(userUid).set(FavoritesList())
+            .addOnSuccessListener {
+                Log.d(javaClass.simpleName, "createFavorites SUCCEEDED")
+                resultListener(true)
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "createFavorites FAILED")
+                resultListener(false)
+            }
+    }
+
+    private fun getFavorites(userUid: String, resultListener: (List<String>, Boolean) -> Unit) {
+        database.collection("favorites").document(userUid).get()
+            .addOnSuccessListener {
+                Log.d(javaClass.simpleName, "getFavorites SUCCEEDED")
+                val favoritesList = it.toObject(FavoritesList::class.java)
+                if (favoritesList == null) {
+                    createFavorites(userUid) { it1 ->
+                        resultListener(listOf<String>(), it1)
+                    }
+                } else {
+                    resultListener(favoritesList.list, true)
+                }
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "getFavorites FAILED")
+                resultListener(listOf<String>(), false)
+            }
+    }
+
+    private fun updateFavorites(userUid: String, list: List<String>,
+                                resultListener: (Boolean) -> Unit) {
+        database.collection("favorites").document(userUid).set(FavoritesList(list))
+            .addOnSuccessListener {
+                Log.d(javaClass.simpleName, "updateFavorites SUCCEEDED")
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "updateFavorites FAILED")
+            }
+    }
+
+    fun togglePostFavorite(userUid: String, postID: String, resultListener: (List<String>, Boolean) -> Unit) {
+        getFavorites(userUid) { list, success ->
+            if (success) {
+                val listCopy = list.toMutableList()
+                if (listCopy.contains(postID)) {
+                    listCopy.remove(postID)
+                } else {
+                    listCopy.add(postID)
+                }
+                updateFavorites(userUid, listCopy) {
+                    Log.d(javaClass.simpleName, "togglePostFavorite ${if (it) {"SUCCEEDED"} else {"FAILED"}}")
+                    resultListener(listCopy, it)
+                }
+            } else {
+                Log.d(javaClass.simpleName, "togglePostFavorite FAILED")
+                resultListener(listOf(), false)
+            }
+        }
+    }
 
 }
