@@ -10,11 +10,11 @@ class FirestoreHelper {
     fun uploadPostData(postData: PostData, resultListener: (Boolean) -> Unit) {
         database.collection("posts").add(postData)
             .addOnSuccessListener {
-                Log.d(javaClass.simpleName, "Upload SUCCEEDED")
+                Log.d(javaClass.simpleName, "uploadPostData SUCCEEDED")
                 resultListener(true)
             }
             .addOnFailureListener {
-                Log.d(javaClass.simpleName, "Upload FAILED")
+                Log.d(javaClass.simpleName, "uploadPostData FAILED")
                 resultListener(false)
             }
     }
@@ -22,7 +22,7 @@ class FirestoreHelper {
     fun getAllPosts(resultListener: (List<PostData>) -> Unit) {
         database.collection("posts").get()
             .addOnSuccessListener {
-                Log.d(javaClass.simpleName, "get SUCCEEDED")
+                Log.d(javaClass.simpleName, "getAllPosts SUCCEEDED")
                 val response: MutableList<PostData> = mutableListOf()
                 for (postData in it) {
                     response.add(postData.toObject(PostData::class.java))
@@ -30,8 +30,25 @@ class FirestoreHelper {
                 resultListener(response)
             }
             .addOnFailureListener {
-                Log.d(javaClass.simpleName, "get FAILED")
+                Log.d(javaClass.simpleName, "getAllPosts FAILED")
                 resultListener(mutableListOf())
             }
     }
+
+//    fun getAllCurrentUserPosts(userUid: String, resultListener: (List<PostData>) -> Unit) {
+//        database.collection("posts").whereEqualTo("ownerUid", userUid).get()
+//            .addOnSuccessListener {
+//                Log.d(javaClass.simpleName, "getAllCurrentUserPosts SUCCEEDED")
+//                val response: MutableList<PostData> = mutableListOf()
+//                for (postData in it) {
+//                    response.add(postData.toObject(PostData::class.java))
+//                }
+//                resultListener(response)
+//            }
+//            .addOnFailureListener {
+//                Log.d(javaClass.simpleName, "getAllCurrentUserPosts FAILED")
+//                resultListener(mutableListOf())
+//            }
+//    }
+
 }

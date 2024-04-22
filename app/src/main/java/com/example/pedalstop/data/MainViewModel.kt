@@ -50,6 +50,15 @@ class MainViewModel : ViewModel() {
         addSource(mountingsTag) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
     }
 
+    fun refetchAllPosts() {
+        viewModelScope.launch {
+            firestoreHelper.getAllPosts() {
+                allPosts.value = it
+                Log.d("BRUH", it.toString())
+            }
+        }
+    }
+
     private fun sortAndFilterPosts(posts: List<PostData>): List<PostData> {
         val copiedPosts = posts.toMutableList()
         copiedPosts.removeAll {
@@ -82,10 +91,6 @@ class MainViewModel : ViewModel() {
 
     fun getCurrentAuthUser(): User {
         return currentAuthUser
-    }
-
-    fun observeAllPosts(): MutableLiveData<List<PostData>> {
-        return allPosts
     }
 
     fun addPost(imageUri: Uri,
@@ -123,6 +128,10 @@ class MainViewModel : ViewModel() {
     fun setUserLocation(location: LatLng) {
         userLocation.value = location
         Log.d("BRUH", userLocation.value.toString())
+    }
+
+    fun observeUserLocation(): MutableLiveData<LatLng> {
+        return userLocation
     }
 
     fun setSearchLocation(location: LatLng) {
