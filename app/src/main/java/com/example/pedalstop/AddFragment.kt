@@ -175,7 +175,10 @@ class AddFragment : Fragment() {
                         "Error adding post"
                     }
                     Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
-                    parentFragmentManager.popBackStack()
+                    if (it) {
+                        viewModel.refetchAllPosts()
+                        parentFragmentManager.popBackStack()
+                    }
                 }
             }
 
