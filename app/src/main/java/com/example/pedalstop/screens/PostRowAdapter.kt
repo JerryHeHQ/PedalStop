@@ -81,8 +81,7 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
         val date = postData.timeStamp?.toDate()
         binding.rowPostTimestamp.text = date?.let { timeFormatter.format(it) }
 
-        val currentAuthUser = viewModel.getCurrentAuthUser()
-        if (postData.favoritedBy.contains(currentAuthUser.uid)) {
+        if (viewModel.isFavorited(postData.firestoreID)) {
             binding.rowPostFavoriteButton.setImageResource(R.drawable.baseline_favorite_24_nopad)
         } else {
             binding.rowPostFavoriteButton.setImageResource(R.drawable.baseline_favorite_border_24_nopad)

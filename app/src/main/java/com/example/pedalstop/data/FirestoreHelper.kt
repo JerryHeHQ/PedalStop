@@ -71,7 +71,7 @@ class FirestoreHelper {
             }
     }
 
-    private fun getFavorites(userUid: String, resultListener: (List<String>, Boolean) -> Unit) {
+    fun getFavorites(userUid: String, resultListener: (List<String>, Boolean) -> Unit) {
         database.collection("favorites").document(userUid).get()
             .addOnSuccessListener {
                 Log.d(javaClass.simpleName, "getFavorites SUCCEEDED")

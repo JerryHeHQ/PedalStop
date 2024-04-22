@@ -8,6 +8,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pedalstop.AuthUser
 import com.example.pedalstop.R
 import com.example.pedalstop.User
 import com.example.pedalstop.invalidUser
@@ -17,7 +18,9 @@ import java.util.UUID
 data class LatLng(val latitude: Double?, val longitude: Double?)
 
 class MainViewModel : ViewModel() {
-    private var currentAuthUser = invalidUser
+    private var currentAuthUser = MutableLiveData<User>().apply {
+        value = invalidUser
+    }
     private val storageHelper = StorageHelper()
     private val firestoreHelper = FirestoreHelper()
     private val userLocation = MutableLiveData<LatLng>().apply {
@@ -42,12 +45,23 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private var favoritesList = MediatorLiveData<List<String>>().apply {
+        addSource(currentAuthUser) {
+            if (currentAuthUser.value != null && currentAuthUser.value != invalidUser) {
+                firestoreHelper.getFavorites(currentAuthUser.value!!.uid) { list, success ->
+                    value = if (success) { list } else { listOf() }
+                }
+            }
+        }
+    }
+
     var visiblePosts = MediatorLiveData<List<PostData>>().apply {
         addSource(allPosts) { value = sortAndFilterPosts(it) }
         addSource(searchLocation) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
         addSource(userLocation) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
         addSource(shapesTag) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
         addSource(mountingsTag) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
+        addSource(favoritesList) { value = value }
     }
 
     fun refetchAllPosts() {
@@ -85,12 +99,16 @@ class MainViewModel : ViewModel() {
         return copiedPosts.toList()
     }
 
+    fun isFavorited(postID: String): Boolean {
+        return favoritesList.value?.contains(postID) ?: false
+    }
+
     fun setCurrentAuthUser(user: User) {
-        currentAuthUser = user
+        currentAuthUser.value = user
     }
 
     fun getCurrentAuthUser(): User {
-        return currentAuthUser
+        return currentAuthUser.value ?: invalidUser
     }
 
     fun addPost(imageUri: Uri,
@@ -109,8 +127,8 @@ class MainViewModel : ViewModel() {
             }
 
             val postData = PostData(
-                currentAuthUser.name,
-                currentAuthUser.uid,
+                getCurrentAuthUser().name,
+                getCurrentAuthUser().uid,
                 imageUUID,
                 latitude,
                 longitude,
