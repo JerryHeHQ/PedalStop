@@ -95,9 +95,11 @@ class FirestoreHelper {
         database.collection("favorites").document(userUid).set(FavoritesList(list))
             .addOnSuccessListener {
                 Log.d(javaClass.simpleName, "updateFavorites SUCCEEDED")
+                resultListener(true)
             }
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "updateFavorites FAILED")
+                resultListener(false)
             }
     }
 

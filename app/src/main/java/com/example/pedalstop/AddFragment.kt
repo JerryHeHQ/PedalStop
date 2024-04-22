@@ -157,8 +157,7 @@ class AddFragment : Fragment() {
             }
 
             if (!hasError) {
-                val mainActivity = (requireActivity() as MainActivity)
-                mainActivity.showProgressBar()
+                viewModel.isLoading.value = true
 
                 viewModel.addPost(
                     selectedImageURI!!,
@@ -168,7 +167,7 @@ class AddFragment : Fragment() {
                     mounting,
                     description,
                 ) {
-                    mainActivity.hideProgressBar()
+                    viewModel.isLoading.value = false
                     val toastMessage = if (it) {
                         "Post successfully added"
                     } else {

@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pedalstop.AuthUser
+import com.example.pedalstop.MainActivity
 import com.example.pedalstop.R
 import com.example.pedalstop.User
 import com.example.pedalstop.invalidUser
@@ -18,6 +19,7 @@ import java.util.UUID
 data class LatLng(val latitude: Double?, val longitude: Double?)
 
 class MainViewModel : ViewModel() {
+    val isLoading = MutableLiveData(true)
     private var currentAuthUser = MutableLiveData<User>().apply {
         value = invalidUser
     }
@@ -61,7 +63,7 @@ class MainViewModel : ViewModel() {
         addSource(userLocation) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
         addSource(shapesTag) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
         addSource(mountingsTag) { value = allPosts.value?.let { it1 -> sortAndFilterPosts(it1) } }
-        addSource(favoritesList) { value = value }
+        addSource(favoritesList) { value = value?.toList() }
     }
 
     fun refetchAllPosts() {
@@ -96,11 +98,24 @@ class MainViewModel : ViewModel() {
             getDistance(it.latitude, it.longitude)
         }
         Log.d("BRUH", copiedPosts.toList().toString())
+        isLoading.value = false
         return copiedPosts.toList()
     }
 
     fun isFavorited(postID: String): Boolean {
         return favoritesList.value?.contains(postID) ?: false
+    }
+
+    fun togglePostFavorite(post: PostData) {
+        isLoading.value = true
+        firestoreHelper.togglePostFavorite(getCurrentAuthUser().uid, post.firestoreID) { list, success ->
+            Log.d("BRUH", success.toString())
+            if (success) {
+                Log.d("BRUH", "hello")
+                favoritesList.value = list
+            }
+            isLoading.value = false
+        }
     }
 
     fun setCurrentAuthUser(user: User) {

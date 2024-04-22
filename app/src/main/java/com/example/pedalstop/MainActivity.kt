@@ -61,14 +61,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun showProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE
-    }
-
-    fun hideProgressBar() {
-        binding.progressBar.visibility = View.GONE
-    }
-
     fun requestSingleLocationUpdate() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -161,6 +153,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initMenu()
+
+        viewModel.isLoading.observe(this) {
+            binding.progressBar.visibility = if (it) { View.VISIBLE } else { View.GONE }
+        }
 
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         appBarConfiguration = AppBarConfiguration(

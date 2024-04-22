@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pedalstop.MainActivity
 import com.example.pedalstop.R
 import com.example.pedalstop.data.PostData
 import com.example.pedalstop.databinding.RowPostBinding
@@ -59,7 +60,9 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
                 // TODO
             }
             rowPosBinding.rowPostFavoriteButton.setOnClickListener {
-                // TODO
+                val adapterPosition = getPos(this)
+                val postData = getItem(adapterPosition)
+                viewModel.togglePostFavorite(postData)
             }
         }
     }
