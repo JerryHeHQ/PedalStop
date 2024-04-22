@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.GONE
     }
 
-    private fun requestSingleLocationUpdate() {
+    fun requestSingleLocationUpdate() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION

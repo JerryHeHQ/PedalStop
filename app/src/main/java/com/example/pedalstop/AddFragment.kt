@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.pedalstop.data.MainViewModel
 import com.example.pedalstop.databinding.FragmentAddBinding
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +25,8 @@ class AddFragment : Fragment() {
     private var _binding: FragmentAddBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
-    private var selectedImageURI : Uri? = null
+    private var selectedImageURI: Uri? = null
+    private var isOldLocation: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,18 @@ class AddFragment : Fragment() {
         val mountings = resources.getStringArray(R.array.mountings)
         val mountingsAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, mountings)
         binding.mountingAutoCompleteTextView.setAdapter(mountingsAdapter)
+
+        viewModel.observeUserLocation().observe(viewLifecycleOwner, Observer {
+            // Requests the user's current location again and inputs it into the LatLng fields
+            if (isOldLocation) {
+                isOldLocation = false
+            } else {
+                binding.latitudeTextInputLayout.editText?.setText(it.latitude.toString())
+                binding.longitudeTextInputLayout.editText?.setText(it.longitude.toString())
+            }
+        })
+        (requireActivity() as MainActivity).requestSingleLocationUpdate()
+
 
         return binding.root
     }
