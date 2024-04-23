@@ -26,6 +26,7 @@ import android.os.Looper
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.example.pedalstop.data.LatLng
 import com.google.android.gms.location.*
@@ -182,13 +183,15 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.currentPost.observe(this) {
             if (it != null) {
+                Log.d("BRUH", it.toString())
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.coverFrameLayout, OnePostFragment())
                     .addToBackStack(null)
                     .commit()
             } else {
-                supportFragmentManager.popBackStack()
+                Log.d("BRUH", "null")
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
 
