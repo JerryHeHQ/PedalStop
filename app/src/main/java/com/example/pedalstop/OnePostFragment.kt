@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.pedalstop.data.MainViewModel
+import com.example.pedalstop.data.PostData
 import com.example.pedalstop.databinding.FragmentOnePostBinding
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -28,6 +31,47 @@ class OnePostFragment : Fragment() {
         return binding.root
     }
 
+    private fun setFavoriteButton(postData: PostData) {
+        if (viewModel.isFavorited(postData.firestoreID)) {
+            binding.onePostFavoriteButton.setImageResource(R.drawable.baseline_favorite_24_nopad)
+        } else {
+            binding.onePostFavoriteButton.setImageResource(R.drawable.baseline_favorite_border_24_nopad)
+        }
+    }
+
+    private fun setRatings(postData: PostData) {
+        val rating = if (postData.reviews.isEmpty()) { 0.0 } else {
+            postData.ratingSum / postData.reviews.size
+        }
+        val stars : List<ImageView> = listOf(
+            binding.onePostStar1,
+            binding.onePostStar2,
+            binding.onePostStar3,
+            binding.onePostStar4,
+            binding.onePostStar5,
+        )
+        for (i in stars.indices) {
+            if (rating - i > 0) {
+                if (rating - i >= 1) {
+                    stars[i].setImageResource(R.drawable.baseline_star_24_nopad)
+                } else {
+                    stars[i].setImageResource(R.drawable.baseline_star_half_24_nopad)
+                }
+            } else {
+                stars[i].setImageResource(R.drawable.baseline_star_border_24_nopad)
+            }
+        }
+
+        val ratingFormatter = DecimalFormat("#.##").apply {
+            minimumFractionDigits = 2
+            maximumFractionDigits = 2
+        }
+        binding.onePostRating.text = ratingFormatter.format(rating).toString()
+
+        val numRatingsText = "(${postData.reviews.size})"
+        binding.onePostNumRatings.text = numRatingsText
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,22 +89,12 @@ class OnePostFragment : Fragment() {
         val date = postData.timeStamp?.toDate()
         binding.onePostTimestamp.text = date?.let { timeFormatter.format(it) }
 
-        if (viewModel.isFavorited(postData.firestoreID)) {
-            binding.onePostFavoriteButton.setImageResource(R.drawable.baseline_favorite_24_nopad)
-        } else {
-            binding.onePostFavoriteButton.setImageResource(R.drawable.baseline_favorite_border_24_nopad)
-        }
+        setFavoriteButton(postData)
 
         binding.onePostFavoriteButton.setOnClickListener {
             viewModel.togglePostFavorite(postData) {
                 if (it) {
-                    // Repeated code, but adding into function causes unnecessary clutter
-                    if (viewModel.isFavorited(postData.firestoreID)) {
-                        binding.onePostFavoriteButton.setImageResource(R.drawable.baseline_favorite_24_nopad)
-                    } else {
-                        binding.onePostFavoriteButton.setImageResource(R.drawable.baseline_favorite_border_24_nopad)
-                    }
-                    binding.onePostFavoriteButton.invalidate()
+                    setFavoriteButton(postData)
                 }
             }
         }
@@ -82,33 +116,43 @@ class OnePostFragment : Fragment() {
         binding.onePostMounting.text = postData.mounting
         binding.onePostDescription.text = postData.description
 
-        val rating = if (postData.reviewIDs.isEmpty()) { 0.0 } else {
-            postData.ratingSum / postData.reviewIDs.size
-        }
-        val stars : List<ImageView> = listOf(
-            binding.onePostStar1,
-            binding.onePostStar2,
-            binding.onePostStar3,
-            binding.onePostStar4,
-            binding.onePostStar5,
-        )
-        for (i in stars.indices) {
-            if (rating - i > 0) {
-                if (rating - i >= 1) {
-                    stars[i].setImageResource(R.drawable.baseline_star_24_nopad)
-                } else {
-                    stars[i].setImageResource(R.drawable.baseline_star_half_24_nopad)
+        setRatings(postData)
+
+        binding.reviewTextInputLayout.setEndIconOnClickListener {
+            val reviewDescription = binding.reviewTextInputEditText.text.toString()
+            val reviewRating = binding.onePostReviewSeekBar.progress * 0.5
+            viewModel.isLoading.value = true
+            viewModel.addReview(reviewRating, reviewDescription) {
+                viewModel.isLoading.value = false
+                if (it) {
+                    setRatings(postData)
                 }
-            } else {
-                stars[i].setImageResource(R.drawable.baseline_star_border_24_nopad)
+                val toastMessage = if (it) {
+                    "Review successfully added"
+                } else {
+                    "Error adding review"
+                }
+                Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
             }
         }
 
-        val ratingFormatter = DecimalFormat("#.##")
-        binding.onePostRating.text = ratingFormatter.format(rating).toString()
+        binding.onePostReviewSeekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val reviewRatingFormatter = DecimalFormat("#.##").apply {
+                    minimumFractionDigits = 1
+                    maximumFractionDigits = 1
+                }
+                binding.onePostReviewRating.text = reviewRatingFormatter.format(
+                    progress * 0.5).toString()
+            }
 
-        val numRatingsText = "(${postData.reviewIDs.size})"
-        binding.onePostNumRatings.text = numRatingsText
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
     }
 
     override fun onDestroyView() {

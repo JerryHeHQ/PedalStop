@@ -3,9 +3,13 @@ package com.example.pedalstop.data
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ServerTimestamp
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.ktx.Firebase
 
 class FirestoreHelper {
 
@@ -121,6 +125,26 @@ class FirestoreHelper {
                 resultListener(listOf(), false)
             }
         }
+    }
+
+    fun addReview(reviewerName: String, reviewerUid: String, postID: String, rating: Double,
+                  description: String, resultListener: (ReviewData, Boolean) -> Unit) {
+
+        val reviewData = ReviewData(reviewerName, reviewerUid, rating, description, )
+
+        database.runTransaction {
+            it.update(database.collection("posts").document(postID),"reviews", FieldValue.arrayUnion(reviewData))
+            it.update(database.collection("posts").document(postID), "ratingSum", FieldValue.increment(rating))
+            true
+        }
+            .addOnSuccessListener {
+            Log.d(javaClass.simpleName, "addReview SUCCEEDED")
+            resultListener(reviewData, true)
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "addReview FAILED")
+                resultListener(reviewData, false)
+            }
     }
 
 }

@@ -98,8 +98,8 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
         val height: Int = context.resources.displayMetrics.heightPixels
         viewModel.glideFetch(postData.imageUUID, binding.rowPostImage, width, height)
 
-        val rating = if (postData.reviewIDs.isEmpty()) { 0.0 } else {
-            postData.ratingSum / postData.reviewIDs.size
+        val rating = if (postData.reviews.isEmpty()) { 0.0 } else {
+            postData.ratingSum / postData.reviews.size
         }
         val stars : List<ImageView> = listOf(
             binding.rowPostStar1,
@@ -120,10 +120,13 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
             }
         }
 
-        val ratingFormatter = DecimalFormat("#.##")
+        val ratingFormatter = DecimalFormat("#.##").apply {
+            minimumFractionDigits = 0
+            maximumFractionDigits = 2
+        }
         binding.rowPostRating.text = ratingFormatter.format(rating).toString()
 
-        val numRatingsText = "(${postData.reviewIDs.size})"
+        val numRatingsText = "(${postData.reviews.size})"
         binding.rowPostNumRatings.text = numRatingsText
 
         binding.rowPostShape.text = postData.shape

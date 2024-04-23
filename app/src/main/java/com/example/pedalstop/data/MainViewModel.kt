@@ -208,6 +208,25 @@ class MainViewModel : ViewModel() {
         mountingsTag.value = mounting
     }
 
+    fun addReview(rating: Double, description: String, resultListener: (Boolean) -> Unit) {
+        firestoreHelper.addReview(getCurrentAuthUser().name, getCurrentAuthUser().uid,
+            currentPost.value!!.firestoreID, rating, description) { reviewData, success ->
+            if (success) {
+                val copyAllPosts = allPosts.value!!.toMutableList()
+                val currentPostIndex = copyAllPosts.indexOfFirst { postData ->
+                    postData.firestoreID == currentPost.value!!.firestoreID
+                }
+                copyAllPosts[currentPostIndex].ratingSum += rating
+                val newReviewsList = copyAllPosts[currentPostIndex].reviews.toMutableList()
+                newReviewsList.add(reviewData)
+                copyAllPosts[currentPostIndex].reviews = newReviewsList.toList()
+                allPosts.value = copyAllPosts
+                currentPost.value = copyAllPosts[currentPostIndex]
+            }
+            resultListener(success)
+        }
+    }
+
     fun glideFetch(uuid: String, imageView: ImageView, width: Int, height: Int) {
         Glide.fetch(
             storageHelper.uuid2StorageReference(uuid),
