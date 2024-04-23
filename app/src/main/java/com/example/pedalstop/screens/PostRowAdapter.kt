@@ -57,12 +57,14 @@ class PostRowAdapter(private val context: Context, private val viewModel: MainVi
         : RecyclerView.ViewHolder(rowPosBinding.root) {
         init {
             rowPosBinding.root.setOnClickListener {
-                // TODO
+                val adapterPosition = getPos(this)
+                val postData = getItem(adapterPosition)
+                viewModel.currentPost.value = postData
             }
             rowPosBinding.rowPostFavoriteButton.setOnClickListener {
                 val adapterPosition = getPos(this)
                 val postData = getItem(adapterPosition)
-                viewModel.togglePostFavorite(postData)
+                viewModel.togglePostFavorite(postData) {} // No need for callback due to observer
             }
         }
     }

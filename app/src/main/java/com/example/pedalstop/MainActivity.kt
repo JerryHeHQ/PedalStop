@@ -26,6 +26,7 @@ import android.os.Looper
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import com.example.pedalstop.data.LatLng
 import com.google.android.gms.location.*
 import kotlinx.coroutines.Dispatchers
@@ -174,9 +175,21 @@ class MainActivity : AppCompatActivity() {
             Log.d("BRUH", viewModel.getCurrentAuthUser().name)
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.addFrameLayout, AddFragment())
+                .replace(R.id.coverFrameLayout, AddFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        viewModel.currentPost.observe(this) {
+            if (it != null) {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.coverFrameLayout, OnePostFragment())
+                    .addToBackStack(null)
+                    .commit()
+            } else {
+                supportFragmentManager.popBackStack()
+            }
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)

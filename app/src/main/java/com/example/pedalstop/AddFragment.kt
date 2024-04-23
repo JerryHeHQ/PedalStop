@@ -28,15 +28,18 @@ class AddFragment : Fragment() {
     private var selectedImageURI: Uri? = null
     private var isOldLocation: Boolean = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Log.d("BRUH", viewModel.getCurrentAuthUser().name)
 
         val shapes = resources.getStringArray(R.array.shapes)
         val shapesAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, shapes)
@@ -46,7 +49,7 @@ class AddFragment : Fragment() {
         val mountingsAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, mountings)
         binding.mountingAutoCompleteTextView.setAdapter(mountingsAdapter)
 
-        viewModel.observeUserLocation().observe(viewLifecycleOwner, Observer {
+        viewModel.observeUserLocation().observe(viewLifecycleOwner) {
             // Requests the user's current location again and inputs it into the LatLng fields
             if (isOldLocation) {
                 isOldLocation = false
@@ -54,17 +57,8 @@ class AddFragment : Fragment() {
                 binding.latitudeTextInputLayout.editText?.setText(it.latitude.toString())
                 binding.longitudeTextInputLayout.editText?.setText(it.longitude.toString())
             }
-        })
+        }
         (requireActivity() as MainActivity).requestSingleLocationUpdate()
-
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        Log.d("BRUH", viewModel.getCurrentAuthUser().name)
 
         binding.cancelButton.setOnClickListener {
             parentFragmentManager.popBackStack()

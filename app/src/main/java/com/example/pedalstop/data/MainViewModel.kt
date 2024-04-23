@@ -66,6 +66,10 @@ class MainViewModel : ViewModel() {
         addSource(favoritesList) { value = value?.toList() }
     }
 
+    var currentPost = MutableLiveData<PostData>().apply {
+        value = null
+    }
+
     fun refetchAllPosts() {
         viewModelScope.launch {
             firestoreHelper.getAllPosts() {
@@ -106,7 +110,7 @@ class MainViewModel : ViewModel() {
         return favoritesList.value?.contains(postID) ?: false
     }
 
-    fun togglePostFavorite(post: PostData) {
+    fun togglePostFavorite(post: PostData, resultListener: (Boolean) -> Unit) {
         isLoading.value = true
         firestoreHelper.togglePostFavorite(getCurrentAuthUser().uid, post.firestoreID) { list, success ->
             Log.d("BRUH", success.toString())
@@ -115,6 +119,7 @@ class MainViewModel : ViewModel() {
                 favoritesList.value = list
             }
             isLoading.value = false
+            resultListener(success)
         }
     }
 
