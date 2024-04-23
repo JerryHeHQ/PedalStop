@@ -70,7 +70,8 @@
                 android:textSize="12sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
