@@ -39,8 +39,6 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("BRUH", viewModel.getCurrentAuthUser().name)
-
         val shapes = resources.getStringArray(R.array.shapes)
         val shapesAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, shapes)
         binding.shapeAutoCompleteTextView.setAdapter(shapesAdapter)

@@ -42,7 +42,6 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             firestoreHelper.getAllPosts() {
                 value = it
-                Log.d("BRUH", it.toString())
             }
         }
     }
@@ -74,7 +73,6 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             firestoreHelper.getAllPosts() {
                 allPosts.value = it
-                Log.d("BRUH", it.toString())
             }
         }
     }
@@ -84,8 +82,6 @@ class MainViewModel : ViewModel() {
         copiedPosts.removeAll {
             var removePost = false
             if (!shapesTag.value.equals("Shapes")) {
-                Log.d("BRUH", shapesTag.value.toString())
-                Log.d("BRUH", it.shape)
                 if (it.shape != shapesTag.value) {
                     removePost = true
                 }
@@ -95,13 +91,11 @@ class MainViewModel : ViewModel() {
                     removePost = true
                 }
             }
-            Log.d("BRUH", removePost.toString())
             removePost
         }
         copiedPosts.sortBy {
             getDistance(it.latitude, it.longitude)
         }
-        Log.d("BRUH", copiedPosts.toList().toString())
         isLoading.value = false
         return copiedPosts.toList()
     }
@@ -113,9 +107,7 @@ class MainViewModel : ViewModel() {
     fun togglePostFavorite(post: PostData, resultListener: (Boolean) -> Unit) {
         isLoading.value = true
         firestoreHelper.togglePostFavorite(getCurrentAuthUser().uid, post.firestoreID) { list, success ->
-            Log.d("BRUH", success.toString())
             if (success) {
-                Log.d("BRUH", "hello")
                 favoritesList.value = list
             }
             isLoading.value = false
@@ -165,7 +157,6 @@ class MainViewModel : ViewModel() {
 
     fun setUserLocation(location: LatLng) {
         userLocation.value = location
-        Log.d("BRUH", userLocation.value.toString())
     }
 
     fun observeUserLocation(): MutableLiveData<LatLng> {
@@ -174,7 +165,6 @@ class MainViewModel : ViewModel() {
 
     fun setSearchLocation(location: LatLng) {
         searchLocation.value = location
-        Log.d("BRUH", searchLocation.value.toString())
     }
 
     fun getDistance(postLatitude: Double, postLongitude: Double): Double {

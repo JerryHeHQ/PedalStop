@@ -84,9 +84,6 @@ class MainActivity : AppCompatActivity() {
                     locationResult.lastLocation.let { location ->
                         val latitude = location.latitude
                         val longitude = location.longitude
-                        Log.d("BRUH", "requestSingleLocationUpdate")
-                        Log.d("BRUH", latitude.toString())
-                        Log.d("BRUH", longitude.toString())
                         viewModel.setUserLocation(LatLng(latitude, longitude))
                     }
                     // Remove location updates after receiving the first location
@@ -125,14 +122,10 @@ class MainActivity : AppCompatActivity() {
             val latitude = addresses[0].latitude
             val longitude = addresses[0].longitude
             viewModel.setSearchLocation(LatLng(latitude, longitude))
-            Log.d("BRUH", "processingAddresses")
-            Log.d("BRUH", latitude.toString())
-            Log.d("BRUH", longitude.toString())
         }
     }
 
     private fun getGeocodingAddress(locationName: String) {
-        Log.d("BRUH", locationName)
         if (Build.VERSION.SDK_INT >= 33) {
             geocoder.getFromLocationName(locationName, 1) {
                 MainScope().launch(Dispatchers.Main) {
@@ -173,7 +166,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
         binding.addPostImageButton.setOnClickListener {
-            Log.d("BRUH", viewModel.getCurrentAuthUser().name)
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.coverFrameLayout, AddFragment())
@@ -183,14 +175,12 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.currentPost.observe(this) {
             if (it != null) {
-                Log.d("BRUH", it.toString())
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.coverFrameLayout, OnePostFragment())
                     .addToBackStack(null)
                     .commit()
             } else {
-                Log.d("BRUH", "null")
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }

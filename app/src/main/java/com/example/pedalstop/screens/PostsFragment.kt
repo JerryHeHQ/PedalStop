@@ -22,7 +22,6 @@ class PostsFragment : Fragment() {
         val postRowAdapter = PostRowAdapter(requireContext(), viewModel)
         binding.postsRecyclerView.adapter = postRowAdapter
         viewModel.visiblePosts.observe(viewLifecycleOwner, Observer {
-            Log.d("BRUH", "submitList")
             postRowAdapter.submitList(it.filter { postData ->
                 postData.ownerUid == viewModel.getCurrentAuthUser().uid
             })

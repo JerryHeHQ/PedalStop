@@ -21,7 +21,6 @@ class SearchFragment : Fragment() {
         val postRowAdapter = PostRowAdapter(requireContext(), viewModel)
         binding.searchRecyclerView.adapter = postRowAdapter
         viewModel.visiblePosts.observe(viewLifecycleOwner, Observer {
-            Log.d("BRUH", "submitList")
             postRowAdapter.submitList(it)
         })
     }

@@ -22,7 +22,6 @@ class SavedFragment : Fragment() {
         val postRowAdapter = PostRowAdapter(requireContext(), viewModel)
         binding.savedRecyclerView.adapter = postRowAdapter
         viewModel.visiblePosts.observe(viewLifecycleOwner, Observer {
-            Log.d("BRUH", "submitList")
             postRowAdapter.submitList(it.filter { postData ->
                 viewModel.isFavorited(postData.firestoreID)
             })

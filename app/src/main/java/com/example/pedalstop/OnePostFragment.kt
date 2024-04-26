@@ -33,7 +33,6 @@ class OnePostFragment : Fragment() {
         val reviewRowAdapter = ReviewRowAdapter(requireContext(), viewModel)
         binding.reviewsRecyclerView.adapter = reviewRowAdapter
         viewModel.currentPost.observe(viewLifecycleOwner) {
-            Log.d("BRUH", "submitList")
             if (it != null) {
                 reviewRowAdapter.submitList(it.reviews)
             }
